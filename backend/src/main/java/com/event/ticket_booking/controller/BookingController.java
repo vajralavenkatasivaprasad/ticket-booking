@@ -1,0 +1,39 @@
+package com.event.ticket_booking.controller;
+
+import com.event.ticket_booking.dto.BookingRequestDTO;
+import com.event.ticket_booking.dto.OtpRequestDTO;
+import com.event.ticket_booking.model.Booking;
+import com.event.ticket_booking.service.BookingService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/bookings")
+@CrossOrigin(origins = "*")
+public class BookingController {
+
+    @Autowired
+    private BookingService bookingService;
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOtp(@Valid @RequestBody OtpRequestDTO request) {
+        try {
+            bookingService.generateAndSendOtp(request.getEmail());
+            return ResponseEntity.ok().body("{\"message\": \"OTP sent successfully\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirmBooking(@Valid @RequestBody BookingRequestDTO request) {
+        try {
+            Booking booking = bookingService.confirmBooking(request);
+            return ResponseEntity.ok(booking);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+}
