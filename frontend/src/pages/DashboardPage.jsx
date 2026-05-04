@@ -12,8 +12,20 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/events');
-        setEvents(res.data);
+        // const res = await axios.get('http://localhost:8080/api/events');
+        // setEvents(res.data);
+        setEvents([
+          {
+            id: 1,
+            name: "Annual Tech Fest - Innovision 2026",
+            department: "Computer Science and Engineering",
+            eventDateTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            venue: "Main Auditorium",
+            ticketPrice: 150.0,
+            availableTickets: 500,
+            totalTickets: 500
+          }
+        ]);
       } catch (err) {
         console.error("Failed to fetch events");
       } finally {
@@ -25,16 +37,6 @@ const DashboardPage = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2>Welcome, {auth?.email}</h2>
-        <div>
-          {auth?.role === 'ROLE_ADMIN' && (
-            <span style={{ marginRight: '1rem', color: 'var(--primary)', fontWeight: 'bold' }}>Admin Dashboard</span>
-          )}
-          <button onClick={logout} className="btn btn-secondary">Logout</button>
-        </div>
-      </div>
-
       <h3 style={{ marginBottom: '1rem' }}>Upcoming Events</h3>
       {loading ? (
         <div style={{ textAlign: 'center', padding: '2rem' }}><span className="loader"></span></div>

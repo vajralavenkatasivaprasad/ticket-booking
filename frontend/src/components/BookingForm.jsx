@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext';
 
 const BookingForm = ({ event, onBookingSuccess }) => {
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
   const [formData, setFormData] = useState({
     userName: '',
     email: '',
@@ -99,6 +101,7 @@ const BookingForm = ({ event, onBookingSuccess }) => {
       }, { headers: { Authorization: `Bearer ${token}` } });
       
       setShowOtpModal(false);
+      addNotification(`Successfully booked ${formData.numberOfTickets} tickets for ${event.name}!`);
       onBookingSuccess();
       navigate('/summary', { state: { booking: response.data } });
     } catch (err) {

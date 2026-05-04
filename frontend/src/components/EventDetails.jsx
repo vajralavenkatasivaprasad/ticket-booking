@@ -1,8 +1,21 @@
-import React from 'react';
-import { Calendar, MapPin, Building, Ticket, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, MapPin, Building, Ticket, Users, Cloud } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 const EventDetails = ({ event }) => {
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    // Fetch mock weather for demonstration (using Delhi coordinates since map is set to Delhi)
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.2090&current_weather=true')
+      .then(res => res.json())
+      .then(data => {
+        if (data.current_weather) {
+          setWeather(data.current_weather);
+        }
+      })
+      .catch(err => console.error("Weather API failed", err));
+  }, []);
   const formattedDate = new Date(event.eventDateTime).toLocaleString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -55,13 +68,23 @@ const EventDetails = ({ event }) => {
         </div>
       </div>
 
-      <div className="event-info-item" style={{ marginBottom: 0 }}>
+      <div className="event-info-item" style={{ marginBottom: weather ? '1.5rem' : 0 }}>
         <MapPin className="event-info-icon" size={24} />
         <div>
           <p className="text-muted" style={{ fontSize: '0.875rem' }}>Venue</p>
           <p style={{ fontWeight: '500' }}>{event.venue}</p>
         </div>
       </div>
+
+      {weather && (
+        <div className="event-info-item" style={{ marginBottom: 0 }}>
+          <Cloud className="event-info-icon" size={24} color="var(--primary)" />
+          <div>
+            <p className="text-muted" style={{ fontSize: '0.875rem' }}>Current Weather at Venue (Live via Open-Meteo API)</p>
+            <p style={{ fontWeight: '500' }}>{weather.temperature}°C, Wind: {weather.windspeed} km/h</p>
+          </div>
+        </div>
+      )}
 
       <div className="map-container">
         <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
