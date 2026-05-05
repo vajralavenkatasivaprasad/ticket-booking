@@ -34,8 +34,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/events/**").permitAll() // Anyone can view events
                 .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole("ADMIN") // Only admin can create events
+                .requestMatchers("/h2-console/**").permitAll() // Allow H2 Console
                 .anyRequest().authenticated() // Bookings require login
             )
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())) // Required for H2 Console
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
