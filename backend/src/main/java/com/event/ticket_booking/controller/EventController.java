@@ -21,6 +21,11 @@ public class EventController {
         return eventRepository.findAll();
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("OK");
+    }
+
     @GetMapping("/{id}")
     public Event getEventById(@PathVariable Long id) {
         return eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
