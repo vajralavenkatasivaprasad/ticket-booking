@@ -1,10 +1,13 @@
 package com.event.ticket_booking;
 
 import com.event.ticket_booking.model.Event;
+import com.event.ticket_booking.model.User;
 import com.event.ticket_booking.repository.EventRepository;
+import com.event.ticket_booking.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +15,18 @@ import java.time.LocalDateTime;
 public class DataLoader {
 
     @Bean
-    CommandLineRunner initDatabase(EventRepository eventRepository) {
+    CommandLineRunner initDatabase(EventRepository eventRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
+            // Seed Admin User
+            if (userRepository.count() == 0) {
+                User admin = new User();
+                admin.setName("System Admin");
+                admin.setEmail("admin@example.com");
+                admin.setPassword(passwordEncoder.encode("admin123"));
+                admin.setRole("ROLE_ADMIN");
+                userRepository.save(admin);
+            }
+
             if (eventRepository.count() == 0) {
                 Event e1 = new Event();
                 e1.setName("Annual Tech Fest - Innovision 2026");
