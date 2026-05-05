@@ -34,6 +34,9 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private com.event.ticket_booking.service.EmailService emailService;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AuthRequest authRequest) {
         if (userRepository.findByEmail(authRequest.getEmail()).isPresent()) {
@@ -79,9 +82,11 @@ public class AuthController {
         }
         
         return userRepository.findByEmail(authRequest.getEmail()).map(user -> {
-            user.setPassword(passwordEncoder.encode("reset123"));
+            String newPass = String.format("%06d", new java.util.Random().nextInt(999999));
+            user.setPassword(passwordEncoder.encode(newPass));
             userRepository.save(user);
-            return ResponseEntity.ok("{\"message\": \"Password has been reset to: reset123\"}");
+            emailService.sendPasswordResetEmail(user.getEmail(), newPass);
+            return ResponseEntity.ok("{\"message\": \"An email with your new password has been sent!\"}");
         }).orElseGet(() -> 
             ResponseEntity.badRequest().body("{\"error\": \"No account found with that email address\"}")
         );
