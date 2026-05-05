@@ -47,7 +47,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(4); // Use minimum strength (4) for lightning-fast startup on free tier
     }
 
     @Bean
