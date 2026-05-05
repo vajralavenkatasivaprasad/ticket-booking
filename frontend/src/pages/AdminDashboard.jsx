@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { PlusCircle } from 'lucide-react';
+import GlassCard from '../components/GlassCard';
 
 const AdminDashboard = () => {
   const { auth } = useContext(AuthContext);
@@ -63,7 +64,7 @@ const AdminDashboard = () => {
         <h2>Admin Dashboard - Create Event</h2>
       </div>
 
-      <div className="card">
+      <GlassCard>
         {success && <div style={{ padding: '1rem', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', borderRadius: '0.5rem', marginBottom: '1rem' }}>{success}</div>}
         {error && <div style={{ padding: '1rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--error)', borderRadius: '0.5rem', marginBottom: '1rem' }}>{error}</div>}
         
@@ -106,7 +107,7 @@ const AdminDashboard = () => {
             {loading ? <span className="loader" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></span> : 'Create Event'}
           </button>
         </form>
-      </div>
+      </GlassCard>
     </div>
   );
 };

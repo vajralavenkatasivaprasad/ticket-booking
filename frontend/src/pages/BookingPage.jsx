@@ -13,8 +13,23 @@ const BookingPage = () => {
   const fetchEvent = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8080/api/events/${id}`);
-      setEvent(response.data);
+      // Mocking for UI demonstration
+      // const response = await axios.get(`http://localhost:8080/api/events/${id}`);
+      // setEvent(response.data);
+      
+      // Delay to simulate network
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setEvent({
+        id: id,
+        name: "Annual Tech Fest - Innovision 2026",
+        department: "Computer Science and Engineering",
+        eventDateTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        venue: "Main Auditorium, Engineering Block",
+        ticketPrice: 150.0,
+        totalTickets: 500,
+        availableTickets: 500
+      });
       setError('');
     } catch (err) {
       setError('Failed to load event details. Is the backend running?');

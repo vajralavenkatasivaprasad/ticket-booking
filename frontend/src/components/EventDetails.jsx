@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Building, Ticket, Users, Cloud } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import GlassCard from './GlassCard';
 
 const EventDetails = ({ event }) => {
   const [weather, setWeather] = useState(null);
@@ -29,8 +30,8 @@ const EventDetails = ({ event }) => {
   const position = [28.6139, 77.2090]; // Delhi coordinates for example
 
   return (
-    <div className="card">
-      <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>{event.name}</h2>
+    <GlassCard>
+      <h2 style={{ marginBottom: '1.5rem', fontSize: '1.75rem', lineHeight: '1.3' }}>{event.name}</h2>
       
       <div className="event-info-item">
         <Building className="event-info-icon" size={24} />
@@ -99,7 +100,7 @@ const EventDetails = ({ event }) => {
           </Marker>
         </MapContainer>
       </div>
-    </div>
+    </GlassCard>
   );
 };
 

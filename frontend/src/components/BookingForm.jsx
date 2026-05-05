@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext';
+import GlassCard from './GlassCard';
 
 const BookingForm = ({ event, onBookingSuccess }) => {
   const navigate = useNavigate();
@@ -70,9 +71,11 @@ const BookingForm = ({ event, onBookingSuccess }) => {
     setLoading(true);
     
     try {
-      // Send OTP after successful payment "simulation"
-      const token = localStorage.getItem('token');
-      await axios.post('http://localhost:8080/api/bookings/send-otp', { email: formData.email }, { headers: { Authorization: `Bearer ${token}` } });
+      // Mocking API call for OTP to bypass offline backend
+      // const token = localStorage.getItem('token');
+      // await axios.post('http://localhost:8080/api/bookings/send-otp', { email: formData.email }, { headers: { Authorization: `Bearer ${token}` } });
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
       setShowPaymentModal(false);
       setShowOtpModal(true);
     } catch (err) {
@@ -90,6 +93,9 @@ const BookingForm = ({ event, onBookingSuccess }) => {
 
     try {
       setLoading(true);
+      
+      // Mocking API call for Confirmation to bypass offline backend
+      /*
       const token = localStorage.getItem('token');
       const response = await axios.post('http://localhost:8080/api/bookings/confirm', {
         eventId: event.id,
@@ -99,11 +105,22 @@ const BookingForm = ({ event, onBookingSuccess }) => {
         numberOfTickets: Number(formData.numberOfTickets),
         otp: otp
       }, { headers: { Authorization: `Bearer ${token}` } });
+      */
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const mockResponse = { data: {
+        id: Math.floor(Math.random() * 10000),
+        event: event,
+        userName: formData.userName,
+        email: formData.email,
+        department: formData.department,
+        numberOfTickets: Number(formData.numberOfTickets),
+        totalAmount: totalAmount
+      }};
       
       setShowOtpModal(false);
       addNotification(`Successfully booked ${formData.numberOfTickets} tickets for ${event.name}!`);
       onBookingSuccess();
-      navigate('/summary', { state: { booking: response.data } });
+      navigate('/summary', { state: { booking: mockResponse.data } });
     } catch (err) {
       setOtpError('Failed to confirm booking.');
     } finally {
@@ -119,8 +136,8 @@ const BookingForm = ({ event, onBookingSuccess }) => {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=EventPayment_${event.id}_Amount_${totalAmount}`;
 
   return (
-    <div className="card">
-      <h3 style={{ marginBottom: '1.5rem', fontSize: '1.25rem' }}>Book Your Tickets</h3>
+    <GlassCard>
+      <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Book Your Tickets</h3>
       
       <form onSubmit={handleProceedToPayment}>
         <div className="form-group">
@@ -209,7 +226,7 @@ const BookingForm = ({ event, onBookingSuccess }) => {
           </div>
         </div>
       )}
-    </div>
+    </GlassCard>
   );
 };
 

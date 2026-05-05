@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircle, Calendar, MapPin, Ticket, User, Briefcase } from 'lucide-react';
+import GlassCard from '../components/GlassCard';
 
 const SummaryPage = () => {
   const location = useLocation();
@@ -9,12 +10,12 @@ const SummaryPage = () => {
 
   if (!booking) {
     return (
-      <div className="card" style={{ textAlign: 'center' }}>
+      <GlassCard style={{ textAlign: 'center' }}>
         <h2>No Booking Found</h2>
         <button onClick={() => navigate('/')} className="btn btn-primary" style={{ marginTop: '1rem' }}>
           Go to Home
         </button>
-      </div>
+      </GlassCard>
     );
   }
 
@@ -29,15 +30,15 @@ const SummaryPage = () => {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <div className="card" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      <GlassCard style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <CheckCircle size={64} style={{ color: 'var(--success)', margin: '0 auto 1rem auto' }} />
         <h2 style={{ color: 'var(--success)', marginBottom: '0.5rem' }}>Booking Confirmed!</h2>
         <p className="text-muted">Your tickets have been successfully booked.</p>
         <p style={{ marginTop: '1rem', fontSize: '0.875rem' }}>Booking ID: <strong>#{booking.id}</strong></p>
-      </div>
+      </GlassCard>
 
-      <div className="card">
-        <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-light)', paddingBottom: '1rem' }}>
+      <GlassCard>
+        <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
           Booking Summary
         </h3>
 
@@ -120,7 +121,7 @@ const SummaryPage = () => {
         >
           Book Another Ticket
         </button>
-      </div>
+      </GlassCard>
     </div>
   );
 };
