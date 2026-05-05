@@ -71,4 +71,19 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthResponse(jwt, user.getEmail(), user.getName(), user.getRole()));
     }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody AuthRequest authRequest) {
+        if (authRequest.getEmail() == null || authRequest.getEmail().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"error\": \"Email is required\"}");
+        }
+        
+        return userRepository.findByEmail(authRequest.getEmail()).map(user -> {
+            user.setPassword(passwordEncoder.encode("reset123"));
+            userRepository.save(user);
+            return ResponseEntity.ok("{\"message\": \"Password has been reset to: reset123\"}");
+        }).orElseGet(() -> 
+            ResponseEntity.badRequest().body("{\"error\": \"No account found with that email address\"}")
+        );
+    }
 }
