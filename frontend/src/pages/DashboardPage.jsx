@@ -1,39 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { EventContext } from '../context/EventContext';
 import { Calendar, Building, Ticket } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 
 const DashboardPage = () => {
-  const [events, setEvents] = useState([]);
+  const { events } = useContext(EventContext);
   const [loading, setLoading] = useState(true);
   const { auth, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        // const res = await axios.get('http://localhost:8080/api/events');
-        // setEvents(res.data);
-        setEvents([
-          {
-            id: 1,
-            name: "Annual Tech Fest - Innovision 2026",
-            department: "Computer Science and Engineering",
-            eventDateTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            venue: "Main Auditorium",
-            ticketPrice: 150.0,
-            availableTickets: 500,
-            totalTickets: 500
-          }
-        ]);
-      } catch (err) {
-        console.error("Failed to fetch events");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEvents();
+    // Simulate network delay
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (

@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
-import { PlusCircle } from 'lucide-react';
+import { EventContext } from '../context/EventContext';
+import { PlusCircle, Calendar, Users, Ticket } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 
 const AdminDashboard = () => {
   const { auth } = useContext(AuthContext);
   const { addNotification } = useNotification();
+  const { events, addEvent } = useContext(EventContext);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
@@ -34,11 +35,18 @@ const AdminDashboard = () => {
 
     try {
       // Mocking admin create event
-      // const token = localStorage.getItem('token');
-      // const eventPayload = { ... };
-      // await axios.post('http://localhost:8080/api/events', eventPayload, { headers: { Authorization: `Bearer ${token}` } });
-      
       await new Promise(resolve => setTimeout(resolve, 800));
+
+      const newEvent = {
+        name: formData.name,
+        department: formData.department,
+        eventDateTime: new Date(formData.eventDateTime).toISOString(),
+        venue: formData.venue,
+        ticketPrice: Number(formData.ticketPrice),
+        totalTickets: Number(formData.totalTickets)
+      };
+
+      addEvent(newEvent);
 
       setSuccess('Event created successfully!');
       addNotification(`Admin Action: Created new event "${formData.name}"`);
@@ -108,6 +116,33 @@ const AdminDashboard = () => {
           </button>
         </form>
       </GlassCard>
+
+      <div style={{ marginTop: '3rem' }}>
+        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <Calendar color="var(--primary)" /> Manage Events
+        </h3>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {events.map((ev) => (
+            <GlassCard key={ev.id} style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{ev.name}</h4>
+                <p className="text-muted" style={{ fontSize: '0.875rem' }}>{new Date(ev.eventDateTime).toLocaleString()}</p>
+              </div>
+              <div style={{ display: 'flex', gap: '1.5rem', textAlign: 'right' }}>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}><Ticket size={12} /> Price</p>
+                  <p style={{ fontWeight: '600' }}>${ev.ticketPrice}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}><Users size={12} /> Tickets</p>
+                  <p style={{ fontWeight: '600' }}>{ev.availableTickets} / {ev.totalTickets}</p>
+                </div>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext';
+import { useBookings } from '../context/BookingContext';
 import GlassCard from './GlassCard';
 
 const BookingForm = ({ event, onBookingSuccess }) => {
   const navigate = useNavigate();
   const { addNotification } = useNotification();
+  const { addBooking } = useBookings();
   const [formData, setFormData] = useState({
     userName: '',
     email: '',
@@ -116,6 +118,8 @@ const BookingForm = ({ event, onBookingSuccess }) => {
         numberOfTickets: Number(formData.numberOfTickets),
         totalAmount: totalAmount
       }};
+      
+      addBooking(mockResponse.data);
       
       setShowOtpModal(false);
       addNotification(`Successfully booked ${formData.numberOfTickets} tickets for ${event.name}!`);

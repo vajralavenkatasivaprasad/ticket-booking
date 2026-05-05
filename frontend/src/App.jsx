@@ -10,6 +10,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import Chatbot from './components/Chatbot';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { NotificationProvider, useNotification } from './context/NotificationContext';
+import { EventProvider } from './context/EventContext';
+import { BookingProvider } from './context/BookingContext';
+import MyBookingsPage from './pages/MyBookingsPage';
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { auth } = useContext(AuthContext);
@@ -73,7 +76,11 @@ const Header = () => {
               <span style={{ fontWeight: '600', fontSize: '0.875rem' }}>{auth.email.split('@')[0]}</span>
               <span className="text-muted" style={{ fontSize: '0.75rem' }}>{auth.role === 'ROLE_ADMIN' ? 'Administrator' : 'User'}</span>
             </div>
-            {auth.role === 'ROLE_ADMIN' && <Link to="/admin" className="text-primary" style={{ textDecoration: 'none', fontWeight: '500', fontSize: '0.875rem' }}>Admin Panel</Link>}
+            {auth.role === 'ROLE_ADMIN' ? (
+              <Link to="/admin" className="text-primary" style={{ textDecoration: 'none', fontWeight: '500', fontSize: '0.875rem' }}>Admin Panel</Link>
+            ) : (
+              <Link to="/my-bookings" className="text-primary" style={{ textDecoration: 'none', fontWeight: '500', fontSize: '0.875rem' }}>My Bookings</Link>
+            )}
             <button onClick={logout} className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>Logout</button>
           </div>
         </div>
@@ -93,6 +100,7 @@ function AppRoutes() {
           <Route path="/register" element={auth ? <Navigate to="/" replace /> : <RegisterPage />} />
           <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/my-bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />
           <Route path="/event/:id" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
           <Route path="/summary" element={<ProtectedRoute><SummaryPage /></ProtectedRoute>} />
         </Routes>
@@ -106,9 +114,13 @@ function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
+        <EventProvider>
+          <BookingProvider>
+            <Router>
+              <AppRoutes />
+            </Router>
+          </BookingProvider>
+        </EventProvider>
       </NotificationProvider>
     </AuthProvider>
   );
