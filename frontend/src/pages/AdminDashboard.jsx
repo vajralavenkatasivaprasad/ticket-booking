@@ -34,9 +34,6 @@ const AdminDashboard = () => {
     setSuccess('');
 
     try {
-      // Mocking admin create event
-      await new Promise(resolve => setTimeout(resolve, 800));
-
       const newEvent = {
         name: formData.name,
         department: formData.department,
@@ -46,7 +43,7 @@ const AdminDashboard = () => {
         totalTickets: Number(formData.totalTickets)
       };
 
-      addEvent(newEvent);
+      await addEvent(newEvent);
 
       setSuccess('Event created successfully!');
       addNotification(`Admin Action: Created new event "${formData.name}"`);

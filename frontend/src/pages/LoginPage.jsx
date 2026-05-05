@@ -12,12 +12,8 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Mocking login as ADMIN
-      // const response = await axios.post('http://localhost:8080/api/auth/login', formData);
-      // login(response.data.token);
-      
-      const dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsInJvbGUiOiJST0xFX0FETUlOIiwiZXhwIjo5OTk5OTk5OTk5fQ.dummySignature";
-      login(dummyToken);
+      const response = await axios.post('/api/auth/login', formData);
+      login(response.data.token);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');

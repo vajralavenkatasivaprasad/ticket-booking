@@ -39,7 +39,8 @@ public class BookingService {
         otpVerification.setExpiryTime(LocalDateTime.now().plusMinutes(5));
         
         otpVerificationRepository.save(otpVerification);
-        emailService.sendOtpEmail(email, otp);
+        // Mock email sending to avoid crash
+        System.out.println(">>> MOCK OTP SENDER: Your OTP for " + email + " is: " + otp + " <<<");
     }
 
     @Transactional

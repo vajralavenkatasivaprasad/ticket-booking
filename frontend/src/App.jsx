@@ -13,6 +13,9 @@ import { NotificationProvider, useNotification } from './context/NotificationCon
 import { EventProvider } from './context/EventContext';
 import { BookingProvider } from './context/BookingContext';
 import MyBookingsPage from './pages/MyBookingsPage';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://ticket-booking-fadz.onrender.com';
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { auth } = useContext(AuthContext);

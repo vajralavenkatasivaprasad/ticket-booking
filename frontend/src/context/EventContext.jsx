@@ -1,40 +1,38 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 
 export const EventContext = createContext();
 
 export const useEvents = () => useContext(EventContext);
 
 export const EventProvider = ({ children }) => {
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      name: "Annual Tech Fest - Innovision 2026",
-      department: "Computer Science and Engineering",
-      eventDateTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      venue: "Main Auditorium",
-      ticketPrice: 150.0,
-      availableTickets: 500,
-      totalTickets: 500
-    },
-    {
-      id: 2,
-      name: "AI & Future Seminar",
-      department: "Artificial Intelligence",
-      eventDateTime: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-      venue: "Seminar Hall B",
-      ticketPrice: 50.0,
-      availableTickets: 200,
-      totalTickets: 200
-    }
-  ]);
+  const [events, setEvents] = useState([]);
 
-  const addEvent = (newEvent) => {
-    const eventWithId = {
-      ...newEvent,
-      id: Date.now(), // Mock ID generation
-      availableTickets: newEvent.totalTickets
-    };
-    setEvents(prev => [...prev, eventWithId]);
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get('/api/events');
+      setEvents(response.data);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  const addEvent = async (newEvent) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post('/api/events', newEvent, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setEvents(prev => [...prev, response.data]);
+      return response.data;
+    } catch (error) {
+      console.error("Error adding event:", error);
+      throw error;
+    }
   };
 
   return (
