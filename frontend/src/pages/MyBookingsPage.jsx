@@ -26,15 +26,20 @@ const MyBookingsPage = () => {
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         {bookings.map((b) => (
-          <GlassCard key={b.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ flex: '1 1 300px' }}>
-              <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>{b.event.name}</h4>
-              <p className="text-muted" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
-                <Calendar size={16} /> {new Date(b.event.eventDateTime).toLocaleString()}
-              </p>
-              <p className="text-muted" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
-                <MapPin size={16} /> {b.event.venue}
-              </p>
+          <GlassCard key={b.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flex: '1 1 300px' }}>
+              <div style={{ background: 'white', padding: '0.5rem', borderRadius: '0.5rem' }}>
+                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=EntryPass_Booking_${b.id}_User_${b.email}`} alt="Entry Pass QR" style={{ display: 'block', width: '100px', height: '100px' }} />
+              </div>
+              <div>
+                <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>{b.event?.name}</h4>
+                <p className="text-muted" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', fontSize: '0.875rem' }}>
+                  <Calendar size={16} /> {new Date(b.event?.eventDateTime || Date.now()).toLocaleString()}
+                </p>
+                <p className="text-muted" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
+                  <MapPin size={16} /> {b.event?.venue}
+                </p>
+              </div>
             </div>
             
             <div style={{ textAlign: 'right', flex: '1 1 150px' }}>

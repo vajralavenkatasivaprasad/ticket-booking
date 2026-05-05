@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -35,5 +38,19 @@ public class BookingController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
         }
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<Booking>> getMyBookings() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userEmail;
+        if (principal instanceof UserDetails) {
+            userEmail = ((UserDetails) principal).getUsername();
+        } else {
+            userEmail = principal.toString();
+        }
+        
+        List<Booking> bookings = bookingService.getBookingsByEmail(userEmail);
+        return ResponseEntity.ok(bookings);
     }
 }

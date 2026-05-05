@@ -86,4 +86,8 @@ public class BookingService {
 
         return savedBooking;
     }
+
+    public java.util.List<Booking> getBookingsByEmail(String email) {
+        return bookingRepository.findByEmail(email);
+    }
 }
