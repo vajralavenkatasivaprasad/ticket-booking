@@ -24,9 +24,9 @@ public class BookingController {
     public ResponseEntity<?> sendOtp(@Valid @RequestBody OtpRequestDTO request) {
         try {
             bookingService.generateAndSendOtp(request.getEmail());
-            return ResponseEntity.ok().body("{\"message\": \"OTP sent successfully\"}");
+            return ResponseEntity.ok().body(java.util.Map.of("message", "OTP sent successfully"));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         }
     }
 
@@ -36,7 +36,7 @@ public class BookingController {
             Booking booking = bookingService.confirmBooking(request);
             return ResponseEntity.ok(booking);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
         }
     }
 

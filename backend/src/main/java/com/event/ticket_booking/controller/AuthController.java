@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AuthRequest authRequest) {
         if (userRepository.findByEmail(authRequest.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("{\"error\": \"Email is already taken!\"}");
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Email is already taken!"));
         }
 
         User user = new User();
@@ -54,7 +54,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok("{\"message\": \"User registered successfully!\"}");
+        return ResponseEntity.ok(java.util.Map.of("message", "User registered successfully!"));
     }
 
     @PostMapping("/login")
@@ -64,7 +64,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
             );
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"error\": \"Incorrect email or password\"}");
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Incorrect email or password"));
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
@@ -78,7 +78,7 @@ public class AuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody AuthRequest authRequest) {
         if (authRequest.getEmail() == null || authRequest.getEmail().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"error\": \"Email is required\"}");
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Email is required"));
         }
         
         return userRepository.findByEmail(authRequest.getEmail()).map(user -> {
@@ -86,9 +86,9 @@ public class AuthController {
             user.setPassword(passwordEncoder.encode(newPass));
             userRepository.save(user);
             emailService.sendPasswordResetEmail(user.getEmail(), newPass);
-            return ResponseEntity.ok("{\"message\": \"An email with your new password has been sent!\"}");
+            return ResponseEntity.ok(java.util.Map.of("message", "An email with your new password has been sent!"));
         }).orElseGet(() -> 
-            ResponseEntity.badRequest().body("{\"error\": \"No account found with that email address\"}")
+            ResponseEntity.badRequest().body(java.util.Map.of("error", "No account found with that email address"))
         );
     }
 }
