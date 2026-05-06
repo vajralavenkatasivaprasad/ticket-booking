@@ -8,10 +8,16 @@ import GlassCard from '../components/GlassCard';
 const AdminDashboard = () => {
   const { auth } = useContext(AuthContext);
   const { addNotification } = useNotification();
-  const { events, addEvent } = useContext(EventContext);
+  const { events, addEvent, fetchEvents } = useContext(EventContext);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  React.useEffect(() => {
+    if (events.length === 0) {
+      fetchEvents();
+    }
+  }, [events.length, fetchEvents]);
 
   const [formData, setFormData] = useState({
     name: '',

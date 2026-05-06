@@ -6,17 +6,20 @@ import { Calendar, Building, Ticket } from 'lucide-react';
 import GlassCard from '../components/GlassCard';
 
 const DashboardPage = () => {
-  const { events } = useContext(EventContext);
+  const { events, fetchEvents } = useContext(EventContext);
   const [loading, setLoading] = useState(true);
   const { auth, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    // Simulate network delay
-    const timer = setTimeout(() => {
+    const loadData = async () => {
+      setLoading(true);
+      if (events.length === 0) {
+        await fetchEvents();
+      }
       setLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+    };
+    loadData();
+  }, [events.length, fetchEvents]);
 
   return (
     <div>

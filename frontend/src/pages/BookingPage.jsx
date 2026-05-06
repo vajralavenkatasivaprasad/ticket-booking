@@ -6,28 +6,37 @@ import BookingForm from '../components/BookingForm';
 
 const BookingPage = () => {
   const { id } = useParams();
-  const { events } = useContext(EventContext);
+  const { events, fetchEvents } = useContext(EventContext);
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const fetchEvent = async () => {
     setLoading(true);
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
     
-    const foundEvent = events.find(e => e.id.toString() === id.toString());
-    if (foundEvent) {
-      setEvent(foundEvent);
-      setError('');
-    } else {
-      setError('Event not found.');
+    if (events.length === 0) {
+      await fetchEvents();
     }
+
+    // Give context a chance to update
+    const currentEvents = events.length > 0 ? events : (await fetchEvents() || []);
+    // Note: EventContext fetchEvents doesn't return events currently, so it relies on the next re-render.
+    
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchEvent();
+    if (events.length > 0) {
+      const foundEvent = events.find(e => e.id.toString() === id.toString());
+      if (foundEvent) {
+        setEvent(foundEvent);
+        setError('');
+      } else {
+        setError('Event not found.');
+      }
+    } else {
+      fetchEvent();
+    }
   }, [id, events]);
 
   if (loading) {
