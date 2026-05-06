@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 import { Bell } from 'lucide-react';
 import BookingPage from './pages/BookingPage';
 import SummaryPage from './pages/SummaryPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminDashboard from './pages/AdminDashboard';
 import Chatbot from './components/Chatbot';
@@ -99,8 +98,8 @@ function AppRoutes() {
       <Header />
       <main className="container">
         <Routes>
-          <Route path="/login" element={auth ? <Navigate to="/" replace /> : <LoginPage />} />
-          <Route path="/register" element={auth ? <Navigate to="/" replace /> : <RegisterPage />} />
+          <Route path="/login" element={auth ? <Navigate to="/" replace /> : <AuthPage />} />
+          <Route path="/register" element={auth ? <Navigate to="/" replace /> : <AuthPage />} />
           <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
           <Route path="/my-bookings" element={<ProtectedRoute><MyBookingsPage /></ProtectedRoute>} />
