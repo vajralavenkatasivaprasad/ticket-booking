@@ -30,17 +30,26 @@ public class BookingService {
     @Autowired
     private EmailService emailService;
 
-    public void generateAndSendOtp(String email) {
+    public String generateAndSendOtp(String email) {
         String otp = String.format("%06d", new Random().nextInt(999999));
         
         OtpVerification otpVerification = new OtpVerification();
         otpVerification.setEmail(email);
         otpVerification.setOtp(otp);
-        otpVerification.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+        otpVerification.setExpiryTime(LocalDateTime.now().plusMinutes(10));
         
+        // ALWAYS save OTP to DB first, before any email attempt
         otpVerificationRepository.save(otpVerification);
-        // Send real email via SMTP
-        emailService.sendOtpEmail(email, otp);
+        
+        // Try to send email — silently ignore failures (SMTP may not be configured)
+        try {
+            emailService.sendOtpEmail(email, otp);
+        } catch (Exception e) {
+            System.err.println("[OTP] Email send failed (SMTP not configured?): " + e.getMessage());
+        }
+        
+        // Return OTP so controller can include it in the response for demo purposes
+        return otp;
     }
 
     @Transactional

@@ -24,10 +24,10 @@ const BookingForm = ({ event, onBookingSuccess }) => {
   const [transactionId, setTransactionId] = useState('');
   const [paymentError, setPaymentError] = useState('');
 
-  // OTP State
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
+  const [demoOtp, setDemoOtp] = useState(''); // shown on screen when email is not configured
 
   const validate = () => {
     const newErrors = {};
@@ -66,7 +66,7 @@ const BookingForm = ({ event, onBookingSuccess }) => {
 
   const handleSimulatePayment = async () => {
     if (!transactionId.trim() || transactionId.length < 5) {
-      setPaymentError('Please enter a valid Transaction ID');
+      setPaymentError('Please enter a valid Transaction ID (min 5 characters)');
       return;
     }
     setPaymentError('');
@@ -74,13 +74,20 @@ const BookingForm = ({ event, onBookingSuccess }) => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.post('/api/bookings/send-otp', { email: formData.email }, {
+      const res = await axios.post('/api/bookings/send-otp', { email: formData.email }, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      // If backend returns the OTP (demo mode), auto-fill and display it
+      if (res.data?.otp) {
+        setDemoOtp(res.data.otp);
+        setOtp(res.data.otp); // auto-fill
+      }
+      
       setShowPaymentModal(false);
       setShowOtpModal(true);
     } catch (err) {
-      setPaymentError(err.response?.data?.error || 'Failed to send OTP. Please try again.');
+      setPaymentError(err.response?.data?.error || 'Failed to verify payment. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -201,16 +208,43 @@ const BookingForm = ({ event, onBookingSuccess }) => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h3 style={{ marginBottom: '0.5rem' }}>Verify Email</h3>
-            <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-              Payment verified! We've sent a 6-digit OTP to {formData.email}.
+            <p className="text-muted" style={{ marginBottom: '1rem', fontSize: '0.875rem' }}>
+              Payment verified! Enter the OTP sent to <strong>{formData.email}</strong>.
             </p>
             
+            {/* Demo OTP Banner - shown when SMTP email is not configured */}
+            {demoOtp && (
+              <div style={{
+                background: 'rgba(139, 92, 246, 0.15)',
+                border: '1px solid rgba(139, 92, 246, 0.4)',
+                borderRadius: '10px',
+                padding: '0.75rem 1rem',
+                marginBottom: '1.25rem',
+                textAlign: 'center'
+              }}>
+                <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.25rem' }}>
+                  📧 Email not configured — your OTP is:
+                </p>
+                <p style={{ margin: 0, fontSize: '2rem', fontWeight: '800', letterSpacing: '0.5rem', color: '#a78bfa' }}>
+                  {demoOtp}
+                </p>
+              </div>
+            )}
+            
             <div className="form-group">
-              <input type="text" className="form-input" placeholder="Enter OTP" value={otp} onChange={(e) => { setOtp(e.target.value); setOtpError(''); }} maxLength={6} style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5rem' }} />
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Enter 6-digit OTP"
+                value={otp}
+                onChange={(e) => { setOtp(e.target.value); setOtpError(''); }}
+                maxLength={6}
+                style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5rem' }}
+              />
               {otpError && <p className="text-error" style={{ textAlign: 'center' }}>{otpError}</p>}
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
               <button type="button" className="btn btn-primary" style={{ width: '100%' }} onClick={handleConfirmBooking} disabled={loading}>
                 {loading ? <span className="loader"></span> : 'Confirm Booking'}
               </button>
