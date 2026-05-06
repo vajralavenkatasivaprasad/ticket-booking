@@ -39,8 +39,8 @@ const LoginPage = () => {
     try {
       const response = await axios.post('/api/auth/reset-password', { email: resetEmail });
       setResetMessage(response.data.message);
-      // Automatically prefill the password field with the new reset password for convenience
-      setFormData({ ...formData, email: resetEmail, password: 'reset123' });
+      // Keep the email prefilled, but clear the password field since the user needs to enter the random password they received
+      setFormData({ ...formData, email: resetEmail, password: '' });
     } catch (err) {
       setResetError(err.response?.data?.error || 'Failed to reset password');
     } finally {
@@ -90,7 +90,7 @@ const LoginPage = () => {
           <div className="modal-content">
             <h3 style={{ marginBottom: '1rem' }}>Reset Password</h3>
             <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-              Enter your email address and we will instantly reset your password to a default one.
+              Enter your email address and we will email you a newly generated password.
             </p>
             
             <form onSubmit={handleForgotPassword}>
