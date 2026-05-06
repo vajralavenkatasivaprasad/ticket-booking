@@ -34,6 +34,7 @@ const BookingPage = () => {
       } else {
         setError('Event not found.');
       }
+      setLoading(false);
     } else {
       fetchEvent();
     }
